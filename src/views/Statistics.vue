@@ -1,5 +1,6 @@
 <template>
   <div class="statistics">
+    <!-- <Statistics /> -->
     <div class="form">
       <div class="form-item">
         <label>文件夹路径:</label>
@@ -31,29 +32,35 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+// @ is an alias to /src
+// import Statistics from '@/components/Statistics.vue';
 import {ipcRenderer} from 'electron';
 
-@Component
-export default class Statistics extends Vue {
-  public form: any = {
-    path: '',
-    format: '',
-    file: '',
-    folder: '',
-    isNotes: true
-  };
-  public lineNum: any = 0;
-  // 选择文件夹
-  public getFolder() {
-    ipcRenderer.send('openDialog');
-  }
-  // 开始统计
-  public startStatistics() {
-    ipcRenderer.send('startStatistics', JSON.stringify(this.form));
-  }
-  public created() {
-    console.log('Statistics');
+export default {
+  name: 'statistics',
+  data() {
+    return {
+      form: {
+        path: '',
+        format: '',
+        file: '',
+        folder: '',
+        isNotes: true
+      },
+      lineNum: 0
+    }
+  },
+  methods: {
+    // 选择文件夹
+    getFolder() {
+      ipcRenderer.send('openDialog');
+    },
+    // 开始统计
+    startStatistics() {
+      ipcRenderer.send('startStatistics', JSON.stringify(this.form));
+    }
+  },
+  mounted() {
     ipcRenderer.on('selectedFolder', (event, arg) => {
       console.log(arg);
       this.form.path = arg;
@@ -65,7 +72,7 @@ export default class Statistics extends Vue {
       this.lineNum = arg;
     });
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -125,3 +132,4 @@ a {
   }
 }
 </style>
+
